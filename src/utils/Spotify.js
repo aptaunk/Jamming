@@ -64,7 +64,8 @@ export const Spotify = {
         }
         return jsonResponse.tracks.items.map( track => {
           return {
-            id: track.id,
+            uri: track.uri,
+            previewUrl: track.preview_url,
             name: track.name,
             artist: track.artists[0].name,
             album: track.album.name
@@ -109,7 +110,6 @@ export const Spotify = {
   },
 
   addTracksToPlaylist(tracks, userId, playlistId, accessToken) {
-    const trackUris = tracks.map(track => 'spotify:track:'+track.id);
     const url =
       'https://cors-anywhere.herokuapp.com/'+
       'https://api.spotify.com/v1'+
@@ -122,7 +122,7 @@ export const Spotify = {
         'Content-Type': 'application/json'
       },
       method: 'POST',
-      body: JSON.stringify({uris: trackUris})
+      body: JSON.stringify({uris: tracks.map(track => track.uri)})
     }).then(
       response => response.json()
     ).then(
